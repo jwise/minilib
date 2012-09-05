@@ -27,6 +27,6 @@ Authors
 Also contributing:
 
   * Jacob Potter <jacobdp@gmail.com>: primary work on `minilib` from the
-    NetWatch era
+    NetWatch era; atoi
   * Elizabeth Fong-Jones <elly@leptoquark.net>: fmt; qalloc
   * Wes Filardo <nwf@cs.jhu.edu>: stdarg
