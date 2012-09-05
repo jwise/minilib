@@ -200,3 +200,21 @@ unsigned int htonl(unsigned int in)
 	       ((in & 0xff0000UL) >> 8) |
 	       ((in & 0xff000000UL) >> 24);
 }
+
+int atoi(const char *c)
+{
+	if (!c) return 0;
+	/* Drop leading whitespace */
+	while (*c == ' ' || *c == '\t') c++;
+
+	/* Handle sign */
+	int sign = 1;
+	if (*c == '-') { sign = -1; c++; }
+	else if (*c == '+') c++;
+
+	int res = 0;
+	while (*c >= '0' && *c <= '9')
+		res = res * 10 + (*c++ - '0');
+
+	return res * sign;
+}
