@@ -179,12 +179,12 @@ static void _sfmtout(void *p, char c) {
 	ctx->buf[ctx->idx++] = c;
 }
 
-int sfmt(char *buf, unsigned int len, const char *fmt, ...) {
+int sfmt(char *buf, unsigned int len, const char *ifmt, ...) {
 	struct fmtctx ctx;
 	struct sfmtctx sctx;
 	va_list ap;
 
-	ctx.str = fmt;
+	ctx.str = ifmt;
 	ctx.out = _sfmtout;
 	ctx.priv = &sctx;
 
@@ -193,7 +193,7 @@ int sfmt(char *buf, unsigned int len, const char *fmt, ...) {
 	sctx.idx = 0;
 	sctx.fidx = 0;
 
-	va_start(ap, fmt);
+	va_start(ap, ifmt);
 	fmt(&ctx, ap);
 	va_end(ap);
 
