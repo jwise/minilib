@@ -63,8 +63,8 @@ static void _utoa(struct fmtctx *ctx, unsigned int base, unsigned long long arg)
 		ctx->out(ctx->priv, *n++);
 }
 
-static void _fmts(struct fmtctx *ctx, char c, va_list va) {
-	const char *s = va_arg(va, const char *);
+static void _fmts(struct fmtctx *ctx, char c, va_list *va) {
+	const char *s = va_arg(*va, const char *);
 	unsigned int n = PREC(ctx);
 	(void)c;
 	while ((!(ctx->state & ST_PREC) || n) && *s) {
@@ -73,16 +73,16 @@ static void _fmts(struct fmtctx *ctx, char c, va_list va) {
 	}
 }
 
-static void _fmtp(struct fmtctx *ctx, char c, va_list va) {
-	void *p = va_arg(va, void *);
+static void _fmtp(struct fmtctx *ctx, char c, va_list *va) {
+	void *p = va_arg(*va, void *);
 	(void)c;
 	ctx->state |= ST_ZEROPAD;
 	PACKWID(ctx, sizeof(void*) * 2);
-	_utoa(ctx, 16, (unsigned long long)p);
+	_utoa(ctx, 16, (unsigned long)p);
 }
 
-static void _fmtd(struct fmtctx *ctx, char c, va_list va) {
-	int n = va_arg(va, int);
+static void _fmtd(struct fmtctx *ctx, char c, va_list *va) {
+	int n = va_arg(*va, int);
 	(void)c;
 	if (n < 0) {
 		ctx->state |= ST_NEGATIVE;
@@ -91,18 +91,18 @@ static void _fmtd(struct fmtctx *ctx, char c, va_list va) {
 	_utoa(ctx, 10, n);
 }
 
-static void _fmtu(struct fmtctx *ctx, char c, va_list va) {
-	unsigned int n = va_arg(va, unsigned int);
+static void _fmtu(struct fmtctx *ctx, char c, va_list *va) {
+	unsigned int n = va_arg(*va, unsigned int);
 	_utoa(ctx, c == 'u' ? 10 : (c == 'o' ? 8 : 16), n);
 }
 
-static void _fmtc(struct fmtctx *ctx, char c, va_list va) {
-	char n = va_arg(va, int);
+static void _fmtc(struct fmtctx *ctx, char c, va_list *va) {
+	char n = va_arg(*va, int);
 	(void)c;
 	ctx->out(ctx->priv, n);
 }
 
-static void _fmtpct(struct fmtctx *ctx, char c, va_list va) {
+static void _fmtpct(struct fmtctx *ctx, char c, va_list *va) {
 	(void)c;
 	(void)va;
 	ctx->out(ctx->priv, '%');
@@ -110,7 +110,7 @@ static void _fmtpct(struct fmtctx *ctx, char c, va_list va) {
 
 struct {
 	char f;
-	void (*func)(struct fmtctx *ctx, char c, va_list va);
+	void (*func)(struct fmtctx *ctx, char c, va_list *va);
 } fmts[] = {
 	{ 's', _fmts },
 	{ 'p', _fmtp },
@@ -162,7 +162,7 @@ void fmt(struct fmtctx *ctx, va_list args) {
 
 		for (i = 0; fmts[i].f; i++)
 			if (fmts[i].f == *ctx->str)
-				fmts[i].func(ctx, *ctx->str, args);
+				fmts[i].func(ctx, *ctx->str, &args);
 
 		ctx->str++;
 	}
