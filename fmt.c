@@ -59,7 +59,7 @@ static void _utoa(struct fmtctx *ctx, unsigned int base, unsigned long long arg)
 		arg /= base;
 	}
 	if (ctx->state & ST_ZEROPAD)
-		while ((o - n) < WID(ctx) && n > buf)
+		while ((unsigned)(o - n) < WID(ctx) && n > buf)
 			*n-- = '0';
 	if (ctx->state & ST_NEGATIVE)
 		*n-- = '-';
