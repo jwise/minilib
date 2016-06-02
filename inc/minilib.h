@@ -41,11 +41,12 @@ extern uint32_t crc32(uint8_t *buf, int len, uint32_t crc0);
 struct fmtctx {
 	const char *str;
 	unsigned int state;
+	int num_written;
 	void (*out)(void *priv, char c);
 	void *priv;
 };
 
-void fmt(struct fmtctx *ctx, va_list args);
+int fmt(struct fmtctx *ctx, va_list args);
 int sfmt(char *buf, unsigned int len, const char *ifmt, ...);
 
 #endif
